@@ -36,28 +36,46 @@ library SafeMath {
 }
 
 contract LuckyLottery {
-  using SafeMath for uint256; //使用上面的库 方便对应uint类的进行计算
+  using SafeMath for uint256; // to use the library above, to extend the function of uint Class
 
   address owner;
+  bool public isEnable = true;
 
   mapping (address => uint256) balances;
   mapping (address => mapping (address => uint256)) allowed;
   mapping (address => bool) public blacklist; // 黑名单
 
+  modifier canBuy() {
+    require(isEnable);
+    _;
+  }
 
-    modifier onlyOwner() {
-      require(msg.sender == owner);
-        _;
-    }
+  modifier onlyOwner() {
+    require(msg.sender == owner);
+      _;
+  }
 
-    modifier onlyWhitelist() {
-      require(blacklist[msg.sender] == false);
-        _;
-    }
+  modifier onlyWhitelist() {
+    require(blacklist[msg.sender] == false);
+      _;
+  }
 
   function LuckyLottery() public {
     address owner = msg.sender;
 
+  }
+
+  function saleCtl(bool _ctl) onlyOwner public {
+    isEnable = _ctl;
+  }
+
+  function buyLottery() payable canBuy onlyWhitelist public {
+    uint wager = msg.value;
+    
+  }
+  // fallback function to buy a ticket
+  function () payable external {  
+    buyLottery();
   }
 
 
@@ -65,7 +83,7 @@ contract LuckyLottery {
     blacklist[_banedUser] = true;
   }
 
-  function addBlacklist(address _banedUser) public onlyOwner {
+  function disableUser(address _banedUser) public onlyOwner {
     _addBlacklist(_banedUser);
   }
 }
