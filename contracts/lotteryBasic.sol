@@ -62,39 +62,32 @@ contract LuckyLottery {
       _;
   }
 
-  function LuckyLottery(uint _minValue, uint _maxJoined) public {
-    address owner = msg.sender;
-    maxJoined = _maxJoined;
-    minValue = _minValue;
-
-
-  }
-
-  function buyLottery() payable public {
+  function _buyLottery() payable public {
     uint wager = msg.value;
     require(wager > 0);
-    uint buyNum = wager.div(minValue);
+    uint buyNum = wager / minValue;
     
     for (uint index = 0; index < buyNum; index++) {
       joinedQueue[currentJoined + index] = msg.sender;   
     }
-    
-    
+
+    currentJoined += buyNum;
   }
 
-  // fallback function to buy a ticket
-  function () payable external {  
-    buyLottery();
-    
-    if (currentJoined == maxJoined) {
-      _luckyDraw();
-
-      currentJoined.clear();
+  function _checkWinner() internal {
+    if (currentJoined >= maxJoined) {
+      
+      winner = _luckyDraw();  // get the winner
+      _sendPrize(winner, maxJoined * minValue); // send the prize to winner
+      currentJoined.clear();  // reset the counter
     }
   }
 
   function _sendPrize(address _winner, uint _prizeValue) internal {
-    
+    require(maxJoined * minValue <= this.balance);
+
+    uint etherBalance = _prizeValue;
+    _winner.transfer(etherBalance);
   }
 
 
@@ -103,6 +96,4 @@ contract LuckyLottery {
    winner = joinedQueue[luckyNum];
    return winner;
   }
-
-
 }
