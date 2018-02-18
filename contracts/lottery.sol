@@ -5,6 +5,8 @@ import "./lotteryBasic.sol";
 contract MyLottery is LuckyLottery {
 
   bool isEnable;
+  address owner;
+  uint currentJoined = 0;
 
   mapping (address => bool) public blacklist; // 黑名单
   
@@ -18,18 +20,18 @@ contract MyLottery is LuckyLottery {
       _;
   }
 
-  function MyLottery(uint _minValue, uint _maxJoined) public {
+  function MyLottery( uint _minValue, uint _maxJoined) public {
     owner = msg.sender;
-    maxJoined = _maxJoined;
-    minValue = _minValue;
+    LuckyLottery.maxJoined = _maxJoined;
+    LuckyLottery.minValue = _minValue;
   }
-
+  
     // fallback function to buy a ticket
-  function () payable external {  
-    _buyLottery();
-    _checkWinner();
+  function () external payable {  
+    LuckyLottery._buyLottery();
+ //   _checkWinner();
   }
-
+  
   function withdraw() onlyOwner public {  // 跑路函数
     uint256 etherBalance = this.balance;
     owner.transfer(etherBalance);

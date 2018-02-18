@@ -35,10 +35,10 @@ library SafeMath {
         assert(c >= a);
         return c;
     }
-
-    function clear(uint a) internal pure returns (uint) {
-      a = 0;
-      return a;
+    // bug
+    // function clear(uint a) internal pure returns (uint) {
+    //   a = 0;
+    //   return a;
     }
 }
 
@@ -46,7 +46,7 @@ contract LuckyLottery {
   using SafeMath for uint; // to use the library above, to extend the function of uint Class
 
   address owner;
-  uint currentJoined = 0;
+  uint public currentJoined = 0;
   uint maxJoined = 0;
   uint minValue;
   address winner;
@@ -62,24 +62,26 @@ contract LuckyLottery {
       _;
   }
 
-  function _buyLottery() payable public {
+  function _buyLottery() payable public returns (uint) {
     uint wager = msg.value;
     require(wager > 0);
     uint buyNum = wager / minValue;
     
-    for (uint index = 0; index < buyNum; index++) {
-      joinedQueue[currentJoined + index] = msg.sender;   
-    }
+    // for (uint index = 0; index < buyNum; index++) {
+    //   joinedQueue[currentJoined + index] = msg.sender;   
+    // }
 
     currentJoined += buyNum;
+    return buyNum;
   }
-
-  function _checkWinner() internal {
+  
+  
+  function _checkWinner() payable public {
     if (currentJoined >= maxJoined) {
       
       winner = _luckyDraw();  // get the winner
       _sendPrize(winner, maxJoined * minValue); // send the prize to winner
-      currentJoined.clear();  // reset the counter
+      currentJoined = 0;  // reset the counter
     }
   }
 
