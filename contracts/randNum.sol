@@ -3,14 +3,14 @@ pragma solidity ^0.4.18;
 
 contract RandNum {
   uint randNonce = 0;
-
+  
+  // return the random vlaue 0 ~ _randMax - 1
   function _genRand(uint _randMax) internal returns(uint) {
     
     uint random = uint(keccak256(now, msg.sender, randNonce)) % _randMax;
     randNonce++;
-    uint random2 = uint(keccak256(now, msg.sender, randNonce)) % _randMax;
 
-    return (random + random2) / 2;
+    return random;
   }
 
   function _resetNonce() internal returns (uint) {

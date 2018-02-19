@@ -50,10 +50,10 @@ contract LuckyLottery {
   uint maxJoined = 0;
   uint minValue;
   address winner;
-  RandNum randNum;
+  RandNum randNum = new RandNum();  // Create new instance
 
   mapping (address => uint) balances;
-  mapping (uint => address) joinedQueue;
+  mapping (uint => address) joinedQueue;    // joined Queue
   mapping (address => mapping (address => uint256)) allowed;
 
 
