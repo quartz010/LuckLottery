@@ -56,6 +56,8 @@ contract LuckyLottery {
   mapping (uint => address) joinedQueue;    // joined Queue
   mapping (address => mapping (address => uint256)) allowed;
 
+  event someoneWin(address _winner, uint value);
+
 
   modifier onlyOwner() {
     require(msg.sender == owner);
@@ -67,9 +69,9 @@ contract LuckyLottery {
     require(wager > 0);
     uint buyNum = wager / minValue;
     
-    // for (uint index = 0; index < buyNum; index++) {
-    //   joinedQueue[currentJoined + index] = msg.sender;   
-    // }
+    for (uint index = 0; index < buyNum; index++) {
+      joinedQueue[currentJoined + index] = msg.sender;   
+    }
 
     currentJoined += buyNum;
     return buyNum;
@@ -78,9 +80,11 @@ contract LuckyLottery {
   
   function _checkWinner() payable public {
     if (currentJoined >= maxJoined) {
-      
+    
       winner = _luckyDraw();  // get the winner
-      _sendPrize(winner, maxJoined * minValue); // send the prize to winner
+    //   _sendPrize(winner, maxJoined * minValue); // send the prize to winner
+      someoneWin(winner, maxJoined * minValue);
+
       currentJoined = 0;  // reset the counter
     }
   }
