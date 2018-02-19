@@ -39,7 +39,7 @@ library SafeMath {
     // function clear(uint a) internal pure returns (uint) {
     //   a = 0;
     //   return a;
-    }
+    // }
 }
 
 contract LuckyLottery {

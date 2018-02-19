@@ -19,7 +19,7 @@ contract MyLottery is LuckyLottery {
     require(blacklist[msg.sender] == false);
       _;
   }
-
+  // 1e15, 5 (0.001 ether, five per bid)
   function MyLottery( uint _minValue, uint _maxJoined) public {
     owner = msg.sender;
     LuckyLottery.maxJoined = _maxJoined;
