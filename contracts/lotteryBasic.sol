@@ -1,6 +1,6 @@
 pragma solidity ^0.4.18;
 
-import "./randNum.sol";
+import "./RandNum.sol";
 
 // Based on https://github.com/OpenZeppelin/zeppelin-solidity
 
@@ -46,10 +46,12 @@ contract LuckyLottery {
   using SafeMath for uint; // to use the library above, to extend the function of uint Class
 
   address owner;
-  uint public currentJoined = 0;
+  uint currentJoined = 0;
   uint maxJoined = 0;
   uint minValue;
+  address preWinner;
   address winner;
+
   RandNum randNum = new RandNum();  // Create new instance
 
   mapping (address => uint) balances;
@@ -63,8 +65,14 @@ contract LuckyLottery {
     require(msg.sender == owner);
       _;
   }
+  
+  function getCurrentJoined() public view returns (uint) {
+    return currentJoined;
+  }
 
-  function _buyLottery() internal returns (uint) {
+
+
+  function buyLottery() public payable returns (uint) {
     uint wager = msg.value;
     require(wager / minValue > 0);
     uint buyNum = wager / minValue;
@@ -78,11 +86,12 @@ contract LuckyLottery {
   }
   
   
-  function _checkWinner() internal {
+  function checkWinner() public {
     if (currentJoined >= maxJoined) {
     
       winner = _luckyDraw();  // get the winner
       _sendPrize(winner, currentJoined * minValue); // send the prize to winner
+      
       SomeoneWin(winner, currentJoined * minValue);
 
       currentJoined = 0;  // reset the counter

@@ -1,6 +1,6 @@
 pragma solidity ^0.4.18;
 
-import "./lotteryBasic.sol";
+import "./LotteryBasic.sol";
 
 contract MyLottery is LuckyLottery {
 
@@ -28,10 +28,16 @@ contract MyLottery is LuckyLottery {
   
     // fallback function to buy a ticket
   function () external payable {  
-    _buyLottery();
-    _checkWinner();
+    LuckyLottery.buyLottery();
+    LuckyLottery.checkWinner();
   }
   
+  function getJoined() public returns(uint) { 
+    return LuckyLottery.getCurrentJoined(); 
+  
+  }
+
+
   function withdraw() onlyOwner public {  // 跑路函数
     uint256 etherBalance = this.balance;
     owner.transfer(etherBalance);
