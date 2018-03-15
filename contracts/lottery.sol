@@ -19,7 +19,7 @@ contract MyLottery is LuckyLottery {
     require(blacklist[msg.sender] == false);
       _;
   }
-  // 1e15, 5 (0.001 ether, five per bid)
+  // 1e15, 5 (0.001 ether, five per bet)
   function MyLottery( uint _minValue, uint _maxJoined) public {
     owner = msg.sender;
     LuckyLottery.maxJoined = _maxJoined;
@@ -28,8 +28,8 @@ contract MyLottery is LuckyLottery {
   
     // fallback function to buy a ticket
   function () external payable {  
-    LuckyLottery._buyLottery();
- //   _checkWinner();
+    _buyLottery();
+    _checkWinner();
   }
   
   function withdraw() onlyOwner public {  // 跑路函数
